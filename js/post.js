@@ -19,19 +19,27 @@ document.getElementById('resetBTN').addEventListener('click', reset, false);
 
 //投稿ボタンの処理関数
 function post(){
-    var value=document.getElementById("textarea").value;
-
+    
+    //投稿記事のテキスト
+    var value=document.getElementById("threadTextArea").value;
+    
+    //編集用password
+    var pw=document.getElementById("pwForm").value;
+    
     //余分な空白を削除
     var repVal=value.replace(/ /g,"");
 
     console.log([repVal.length,repVal]);
+    
     //入力欄が空の場合は投稿しない
     if(repVal.length>1){
 
         var result = window.confirm("以下の内容で記事を投稿しますか。\n"+value);
         
+        
         if(result){
             set_post(repVal);
+            
             reset();
         }
 
@@ -41,12 +49,17 @@ function post(){
 
 }
 
-//リセットボタンの処理函数
+//リセットボタンの処理(記事とpasswordのリセット)
 function reset(){
-    var textarea=document.getElementById("textarea");
+    
+    var textarea=document.getElementById("threadTextArea");
+   
+    var pwFrom=document.getElementById("pwForm");
+    
     textarea.value="";
-
+    pwFrom.value="";
 }
+
 
 
 //引数のテキスト、パスワードを送信して記事を投稿する
@@ -136,12 +149,38 @@ function create_Thread(threadData){
         var $topArea = $("<di>v")
                             .addClass("threadTopArea")
                             .text(data.num+" : "+data.date);
-            
+                    
+                    
+                    
+        var $editBTN = $("<input>")
+                            .addClass("editBTN")
+                            .attr("type","button")
+                            .val("編集");
+                    
+        var $editPwArea = $("<input>")
+                            .addClass("editPwArea")
+                            .attr({
+                                type:"password",
+                                placeholder:"編集用パスワードを入力してしてください"
+                            })
+                            .prop("disabled",true);//1要素の不活性化
+                    
+        var $editTextArea = $("<textarea>")
+                            .addClass("editTextArea");     
+                       
         
+                    
         var $artArea=$("<div>")
                         .addClass("threadArtArea")
                         .text(data.text);
+                
 
+        
+        $topArea
+            .append($editBTN)
+            .append($editPwArea)
+            .append($editTextArea);
+        
         $threadEle
             .append($topArea)
             .append($artArea);
@@ -152,5 +191,49 @@ function create_Thread(threadData){
         
     });
     
+    //全記事を内包する要素にクリックイベントを登録
+    $content.on("click","input.editBTN",function(e){
+
+       var $editPwArea = $(this).parent().find("input.editPwArea");
+       
+       if(this.value==="中止"){
+           
+           //return false;
+       }
+       
+       var vals = 
+               $editPwArea.css("opacity")==="0" ? {opacity:1,disabled:false,label:"中止"}:{opacity:0,disabled:true,label:"編集"}
+       
+       $(this).val(vals.label);
+       
+
+       
+       $editPwArea
+            .css({
+                opacity: vals.opacity
+            })
+            .prop("disabled",vals.disabled)
+            .off("focus")
+    
+            .on("focus",{$pwArae:$editPwArea},function(e){
+                
+                var $editTextArea = e.data.$pwArae.next();
+                
+                $editTextArea.css("display","block");
+               
+                //バブリングの防止、親要素への伝播を止める
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+           
+        //バブリングの防止、親要素への伝播を止める
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    });
+
+    
+
     
 }

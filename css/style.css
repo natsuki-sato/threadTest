@@ -39,19 +39,20 @@ and open the template in the editor.
 
 
 #postForm{
+   padding: 5px;
 }
 
-#textarea{
+#threadTextArea{
     width: 200px;
-    height: 120px;
+    min-height: 60px;
     border: 1px solid green;
     /*float: left;    */ 
-    display: inline-block;
+    display: block;
 }
 
 #postBTN{
     /*float: left;*/
-    display: inline-block;
+    //display: inline-block;
 }
 
 #threadContent li.thread{
@@ -72,4 +73,24 @@ and open the template in the editor.
 
 #threadContent div.threadArtArea{
     margin: 0 24px;
+}
+
+input.editBTN{
+    
+    margin:1px 5px;
+}
+
+input.editPwArea{
+    /*display: none;*/
+    opacity : 0;
+    margin:1px 5px;
+    
+    
+    /*アニメーション用の設定*/
+    transition-property: opacity;
+    transition-duration: 0.5s;
+}
+textarea.editTextArea{
+    display:none
+        
 }

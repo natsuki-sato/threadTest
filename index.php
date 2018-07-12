@@ -27,7 +27,8 @@ and open the template in the editor.
                 </ul>
             </div>
             <div id="postForm" name="postForm">
-                <textarea id="textarea" placeholder="文字を入力してください。"></textarea>
+                <textarea id="threadTextArea" placeholder="文字を入力してください。"></textarea>
+                <input id="pwForm" type="password" placeholder="編集用パスワード" ></input>
                 <input id="resetBTN" type="submit" value="リセット" ></input>
                 <input id="postBTN" type="submit" value="投稿する" ></input>
             </div>
