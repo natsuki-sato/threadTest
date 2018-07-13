@@ -90,7 +90,7 @@ input.editPwArea{
     opacity:1;
     margin:1px 5px;
     
-    /*アニメーション用の設定*/
+    /*アニメーション用の設定　*/
     transition-property: opacity;
     transition-duration: 0.5s;
 }

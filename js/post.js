@@ -239,7 +239,7 @@ function create_Thread(threadData){
                 });
        }
 
-       //編集パスワード入力部のスタイル変更
+       //編集パスワード入力部のスタイル変更する
        $editPwArea
             .toggleClass("disableEle")
             .prop("disabled",vals.disabled)
