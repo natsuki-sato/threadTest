@@ -24,30 +24,34 @@
         //接続できなかったらここで終わります
     }
     
-    //ajaxデータを変数に格納s
-    //$text   = filter_input(INPUT_POST, 'text');
+    //ajaxデータを変数に格納
+    $threadId = filter_input(INPUT_POST, 'id');
+    $threadPw = filter_input(INPUT_POST, 'password');
     
     //テーブル名
     $tb="thread";
     
-    //実行するクエリの内容(データの取得)
-    $query="select * from ".$tb;
+    //実行するクエリの内容(データの検索)
+    $query="select id,password from ".$tb. " where id=".$threadId;
     
     //クエリを実行
     $result = mysqli_query($connect,$query);
     
-    //結果がなかったら終了
-    if(!$result){
-        //echo "投稿が失敗しました。";
+    $row = mysqli_fetch_object($result);
+    
+//    echo "auth";
+//    echo "[".$threadPw."]==[".$row->id."]";
+    
+    //結果がない・パスワードが異なる場合は,falseを返す
+    if(!$result || $row->password."" !== $threadPw){
+        //echo "パスワードが一致しません";
+        echo json_encode(false);
         die();
     }
-    
+    //パスワードが一致したならtrueを返す
+    echo json_encode(true);
+    //echo "test";
 
-    //$row = mysqli_fetch_object($result);
-    header('Content-type: application/json');
-    echo json_encode($result->fetch_all());
-
-    //echo "投稿しました。";
     
     mysqli_close($connect);
 

@@ -34,5 +34,6 @@ and open the template in the editor.
             </div>
         </div>
     </body>
+    <script src="js/post_ajax.js" type="text/javascript"></script>
     <script src="js/post.js" type="text/javascript"></script>
 </html>

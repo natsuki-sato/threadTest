@@ -4,14 +4,20 @@
  * and open the template in the editor.
  */
 
-get_post();
-
 var threadData={
     raw:null,
     json:null
 };
 
+var que={
+    update:null
+};
 
+//update_post(1,"","uuuuu");
+
+get_post();
+
+//auth_password(1,"");
 
 console.log("test");
 
@@ -64,62 +70,7 @@ function reset(){
 
 
 
-//引数のテキスト、パスワードを送信して記事を投稿する
-function set_post(text){
-    
-      var data = {
-         'text' : text
-      };
-      
-      console.log({ajax_post:data});
-      
-      $.ajax({
-        type: "POST",
-        url: "php/set_post.php",
-        data: data,
-        async: true,
-        success:function(data, dataType) {
 
-            alert("記事を投稿しました。");
-            get_post();
-        },
-        error:function(XMLHttpRequest, textStatus, errorThrown) {
-            
-            alert("記事の投稿に失敗しました。");
-            // エラーメッセージの表示
-            //alert('Error : ' + errorThrown);
-        }
-      });
-}
-
-//条件を指定して投稿記事を取得する
-function get_post(){
-    
-      var data = {
-         'text' : null
-      };
-      
-      console.log({ajax_post:data});
-      
-      $.ajax({
-        type: "POST",
-        url: "php/get_post.php",
-        data: data,
-        async: true,
-        success:function(data, dataType) {
-            console.log(data);
-            //グローバル変数に格納
-            threadData.json=data;
-            
-            create_Thread(data);
-            //alert("記事を投稿しました。");
-        },
-        error:function(XMLHttpRequest, textStatus, errorThrown) {
-            
-            
-        }
-      });
-}
 
 function create_Thread(threadData){
     
@@ -140,11 +91,10 @@ function create_Thread(threadData){
                         /(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/,
                        "$1年$2月$3日 $4時$5分$6秒"
                     ),
-            text : ele[2]
+            text : ele[3]
                     
         };
-        console.log(data.date.replace(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/,
-                       "$1年$2月$3日$4時$5分$6秒"));
+        //console.log(data.date.replace(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/, "$1年$2月$3日$4時$5分$6秒"));
         var $threadEle = $("<li>")
                             .attr("id","thread"+data.num)
                             .addClass("thread");
@@ -242,14 +192,16 @@ function create_Thread(threadData){
        //編集パスワード入力部のスタイル変更する
        $editPwArea
             .toggleClass("disableEle")
-            .prop("disabled",vals.disabled)
+            .prop("disabled",vals.disabled) //要素を非活性化
 
             .off("keydown")
-    
             .on("keydown",{num:threadNum},function(e){
                 
-               if(e.keyCode === 13){
-                   
+               if(e.keyCode === 13){//enterキーで送信
+                    var pass = this.value;
+                    
+                    auth_password(e.data.num,pass);
+                    
                     $(this).prop("disabled",true);
 
                     toggleEditArea(e.data.num);
@@ -260,23 +212,45 @@ function create_Thread(threadData){
 
             });
             
+        //記事更新ボタンの操作
         $editUpdateBTN
                 .off("click")
-                .on("click",{num:threadNum},function(e){
+                .on("click",{num:threadNum},function(e){//クリックイベントを上書き
   
-                    var orgText=$("#editTextArea"+e.data.num).val();
+                    
+                    var orgText=$("#threadArtArea"+e.data.num).text();
                     var updateText=$("#editTextArea"+e.data.num).val();
+                    var pass = $("#editPwArea"+e.data.num).val();
+                    
                     console.log([orgText,updateText]);
+                    
+                    //記事の変更がなければ更新しない
                     if(orgText===updateText){
                         
                         alert("記事の内容が同じです。");
-                        
-                    }else{
+                     
+                    }
+                    //更新時にダイアログで確認
+                    else{
                         
                         var result = window.confirm("以下の内容で記事を更新しますか。\n"+updateText);
 
                         if(result){
-                            alert("記事を更新しました。")
+                            
+                            update_post(e.data.num,pass,updateText);
+                            
+                            window.clearInterval(que.update);
+                            que.update=window.setInterval(function(){
+                                
+                                window.clearInterval(que.update);
+                                
+                                alert("記事を更新しました。");
+                                get_post();
+                                
+                            },500);
+                            
+                            
+                            
                         }
                     }
 
@@ -293,7 +267,7 @@ function create_Thread(threadData){
         return false;
     });
 
-
+    //記事編集エリアと記事エリアの切替処理
     function toggleEditArea(num,flag){
         
         var $editTextArea = $("#editTextArea"+num);
@@ -310,7 +284,7 @@ function create_Thread(threadData){
 
             $artArea.toggleClass("hidingEle");
             
-        }else if(!flag){
+        }else if(!flag){//toggleClass関数に第二の引数を渡すと、inline-blockになるバグへの対策
             
             $editTextArea.addClass("hidingEle");
 

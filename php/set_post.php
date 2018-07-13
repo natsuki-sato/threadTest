@@ -41,11 +41,8 @@
         //echo "投稿が失敗しました。";
         die();
     }
-
     //echo "投稿しました。";
     
     mysqli_close($connect);
-
     //全処理を終了
     exit();
-?>
