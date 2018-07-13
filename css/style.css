@@ -80,17 +80,38 @@ input.editBTN{
     margin:1px 5px;
 }
 
-input.editPwArea{
-    /*display: none;*/
-    opacity : 0;
-    margin:1px 5px;
+input.editPwArea:disabled{
+    opacity:0;
     
+}
+
+input.editPwArea{
+    
+    opacity:1;
+    margin:1px 5px;
     
     /*アニメーション用の設定*/
     transition-property: opacity;
     transition-duration: 0.5s;
 }
+
+
 textarea.editTextArea{
-    display:none
-        
+    display:block
+}
+
+textarea.editTextArea.hidingEle{
+    display:none;
+}
+
+input.editUpdateBTN.hidingEle{
+    display:none;
+}
+
+div.threadArtArea{
+    
+}
+
+div.threadArtArea.hidingEle{
+    display:none;
 }

@@ -11,6 +11,8 @@ var threadData={
     json:null
 };
 
+
+
 console.log("test");
 
 document.getElementById('postBTN').addEventListener('click', post, false);
@@ -144,33 +146,49 @@ function create_Thread(threadData){
         console.log(data.date.replace(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/,
                        "$1年$2月$3日$4時$5分$6秒"));
         var $threadEle = $("<li>")
+                            .attr("id","thread"+data.num)
                             .addClass("thread");
+                            
        
-        var $topArea = $("<di>v")
+        var $topArea = $("<div>")
+                            .attr("id","threadTopArea"+data.num)
                             .addClass("threadTopArea")
                             .text(data.num+" : "+data.date);
                     
                     
                     
         var $editBTN = $("<input>")
+                            .attr("id","editBTN"+data.num)
                             .addClass("editBTN")
                             .attr("type","button")
                             .val("編集");
                     
         var $editPwArea = $("<input>")
-                            .addClass("editPwArea")
+                            .attr("id","editPwArea"+data.num)
+                            .addClass("editPwArea disableEle")
                             .attr({
                                 type:"password",
                                 placeholder:"編集用パスワードを入力してしてください"
                             })
-                            .prop("disabled",true);//1要素の不活性化
+                            .prop("disabled",true);//要素の不活性化
+                    
+
                     
         var $editTextArea = $("<textarea>")
-                            .addClass("editTextArea");     
-                       
+                            .attr("id","editTextArea"+data.num)
+                            .addClass("editTextArea hidingEle"); 
+                    
+        var $editUpdateBTN = $("<input>")
+                    .attr({
+                        id:"editUpdateBTN"+data.num,
+                        type:"button"
+                    })
+                    .addClass("editUpdateBTN hidingEle")
+                    .val("決定");              
         
                     
         var $artArea=$("<div>")
+                        .attr("id","threadArtArea"+data.num)
                         .addClass("threadArtArea")
                         .text(data.text);
                 
@@ -179,7 +197,8 @@ function create_Thread(threadData){
         $topArea
             .append($editBTN)
             .append($editPwArea)
-            .append($editTextArea);
+            .append($editTextArea)
+            .append($editUpdateBTN);
         
         $threadEle
             .append($topArea)
@@ -194,38 +213,79 @@ function create_Thread(threadData){
     //全記事を内包する要素にクリックイベントを登録
     $content.on("click","input.editBTN",function(e){
 
-       var $editPwArea = $(this).parent().find("input.editPwArea");
-       
-       if(this.value==="中止"){
-           
-           //return false;
-       }
-       
-       var vals = 
-               $editPwArea.css("opacity")==="0" ? {opacity:1,disabled:false,label:"中止"}:{opacity:0,disabled:true,label:"編集"}
-       
-       $(this).val(vals.label);
-       
+       //掲示板の番号を取り出す
+       var threadNum = parseInt(this.id.match(/(\d{1,9})$/)[0]);
 
+
+       var $editBtn = $(this);
+       var $editPwArea = $("#editPwArea"+threadNum);
+       var $editUpdateBTN = $("#editUpdateBTN"+threadNum);
        
+       
+       var vals = $editPwArea.hasClass("disableEle")? 
+                  {disabled:false,label:"中止",editingFlag:true}: 
+                  {disabled:true,label:"編集",editingFlag:false};
+       
+       
+       $editBtn
+            .toggleClass("editing") //編集中のクラスを付加
+            .val(vals.label);       //ボタンの文字を書き換える
+       
+       if(vals.editingFlag) {
+           $editBtn
+                .one("click",{num:threadNum},function(e){ //編集中なら一度だけクリックでキャンセル
+                    
+                    toggleEditArea(e.data.num,false);
+                });
+       }
+
+       //編集パスワード入力部のスタイル変更
        $editPwArea
-            .css({
-                opacity: vals.opacity
-            })
+            .toggleClass("disableEle")
             .prop("disabled",vals.disabled)
-            .off("focus")
+
+            .off("keydown")
     
-            .on("focus",{$pwArae:$editPwArea},function(e){
+            .on("keydown",{num:threadNum},function(e){
                 
-                var $editTextArea = e.data.$pwArae.next();
-                
-                $editTextArea.css("display","block");
-               
+               if(e.keyCode === 13){
+                   
+                    $(this).prop("disabled",true);
+
+                    toggleEditArea(e.data.num);
+               } 
                 //バブリングの防止、親要素への伝播を止める
                 e.preventDefault();
                 e.stopPropagation();
-                return false;
+
             });
+            
+        $editUpdateBTN
+                .off("click")
+                .on("click",{num:threadNum},function(e){
+  
+                    var orgText=$("#editTextArea"+e.data.num).val();
+                    var updateText=$("#editTextArea"+e.data.num).val();
+                    console.log([orgText,updateText]);
+                    if(orgText===updateText){
+                        
+                        alert("記事の内容が同じです。");
+                        
+                    }else{
+                        
+                        var result = window.confirm("以下の内容で記事を更新しますか。\n"+updateText);
+
+                        if(result){
+                            alert("記事を更新しました。")
+                        }
+                    }
+
+                    //バブリングの防止、親要素への伝播を止める
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                    
+                 });
            
         //バブリングの防止、親要素への伝播を止める
         e.preventDefault();
@@ -233,7 +293,34 @@ function create_Thread(threadData){
         return false;
     });
 
+
+    function toggleEditArea(num,flag){
+        
+        var $editTextArea = $("#editTextArea"+num);
+        var $updateBtn    = $("#editUpdateBTN"+num);
+        var $artArea      = $("#threadArtArea"+num);
+
+        if(flag===undefined){
+        
+            $editTextArea
+                    .val($artArea.text())
+                    .toggleClass("hidingEle");
+
+            $updateBtn.toggleClass("hidingEle");
+
+            $artArea.toggleClass("hidingEle");
+            
+        }else if(!flag){
+            
+            $editTextArea.addClass("hidingEle");
+
+            $updateBtn.addClass("hidingEle");
+
+            $artArea.removeClass("hidingEle");
+        }
+    }
     
+
 
     
 }
