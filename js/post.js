@@ -27,6 +27,12 @@ document.getElementById('postBTN').addEventListener('click', post, false);
 
 document.getElementById('resetBTN').addEventListener('click', reset, false);
 
+//ページ上部に移動する処理
+document.getElementById('moveTopBtn').addEventListener('click', function(){
+    //alert();
+    document.body.scrollTop=0;
+}, false);
+
 //投稿ボタンの処理関数
 function post(){
     
@@ -129,7 +135,8 @@ function create_Thread(threadData){
                     
         var $editTextArea = $("<textarea>")
                             .attr("id","editTextArea"+data.num)
-                            .addClass("editTextArea hidingEle"); 
+                            .addClass("editTextArea hidingEle")
+                            .val(data.text);
                     
         var $editUpdateBTN = $("<input>")
                     .attr({
@@ -143,7 +150,7 @@ function create_Thread(threadData){
         var $artArea=$("<div>")
                         .attr("id","threadArtArea"+data.num)
                         .addClass("threadArtArea")
-                        .text(data.text);
+                        .html(data.text.replace(/\n/g,"<br>"));//記事テキストの改行にbrタグに置き換え
                 
 
         
@@ -248,8 +255,8 @@ function create_Thread(threadData){
                 .off("click")
                 .on("click",{num:threadNum},function(e){//クリックイベントを上書き
   
-                    
-                    var orgText=$("#threadArtArea"+e.data.num).text();
+                    //記事内部のbrタグを改行に戻す
+                    var orgText=$("#threadArtArea"+e.data.num).html().replace(/<br>/g,"\n");
                     var updateText=$("#editTextArea"+e.data.num).val();
                     var pass = $("#editPwArea"+e.data.num).val();
                     
@@ -307,7 +314,7 @@ function create_Thread(threadData){
         if(flag===undefined){
         
             $editTextArea
-                    .val($artArea.text())
+                    //.val($artArea.text())
                     .toggleClass("hidingEle");
 
             $updateBtn.toggleClass("hidingEle");

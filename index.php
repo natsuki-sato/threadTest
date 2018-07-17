@@ -19,7 +19,9 @@ and open the template in the editor.
     </head>
     <body>
         <div id="contentFrame">
-            <div id="menu">ここに上部メニュー</div>
+            <div id="menu">ここに上部メニュー
+                <div id="moveTopBtn">↑</div>
+            </div>
             <div id="threadFrame">
                 <ul id="threadContent">
                     
