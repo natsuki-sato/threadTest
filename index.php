@@ -40,4 +40,9 @@ and open the template in the editor.
     </body>
     <script src="js/post_ajax.js" type="text/javascript"></script>
     <script src="js/post.js" type="text/javascript"></script>
+    
+    <?php 
+        
+        require './php/auth_twitter.php'; 
+    ?>
 </html>
