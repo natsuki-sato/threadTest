@@ -10,8 +10,10 @@ var threadData={
 };
 
 var que={
-    update:null
+    autho:null,
+    update:null  
 };
+
 
 //update_post(1,"","uuuuu");
 
@@ -33,11 +35,12 @@ function post(){
     
     //編集用password
     var pw=document.getElementById("pwForm").value;
+
     
     //余分な空白を削除
     var repVal=value.replace(/ /g,"");
 
-    console.log([repVal.length,repVal]);
+    //console.log([repVal.length,repVal]);
     
     //入力欄が空の場合は投稿しない
     if(repVal.length>1){
@@ -46,7 +49,7 @@ function post(){
         
         
         if(result){
-            set_post(repVal);
+            set_post(pw,repVal);
             
             reset();
         }
@@ -161,6 +164,7 @@ function create_Thread(threadData){
     });
     
     //全記事を内包する要素にクリックイベントを登録
+    $content.off("click");
     $content.on("click","input.editBTN",function(e){
 
        //掲示板の番号を取り出す
@@ -200,12 +204,39 @@ function create_Thread(threadData){
                if(e.keyCode === 13){//enterキーで送信
                     var pass = this.value;
                     
+                    //パスワード認証用phpにわたす
                     auth_password(e.data.num,pass);
                     
-                    $(this).prop("disabled",true);
+                    //phpへの問い合せは非同期のため、結果の変数を監視し、成否から処理を分岐する
+                    obs_interval({
+                        name:"auth",//監視する処理名
+                        time:500,//監視の間隔(ミリ秒)
+                        
+                        para:{//即時関数ないで使用する関数
+                            pwEle:this,
+                            num : e.data.num
+                        },
+                        
+                        funcTrue:function(para){
+                            
+                            //パスワード入力欄を無効化し、編集エリアと記事エリアを入れ替える
+                            console.log(para);
+                            $(para.pwEle).prop("disabled",true);
+                            toggleEditArea(para.num);
+                        },
+                        funcFalse:function(para){
+                            console.log(para);
+                            $(para.pwEle).val("");
+                            alert("パスワードに誤りがあります。");
+                        }
 
-                    toggleEditArea(e.data.num);
-               } 
+                    });
+                    
+                   
+                    
+               }else{
+                   return true;
+               }
                 //バブリングの防止、親要素への伝播を止める
                 e.preventDefault();
                 e.stopPropagation();
@@ -234,11 +265,12 @@ function create_Thread(threadData){
                     else{
                         
                         var result = window.confirm("以下の内容で記事を更新しますか。\n"+updateText);
-
+                        
+                        //ダイアログの確認後、記事の更新を行う
                         if(result){
                             
                             update_post(e.data.num,pass,updateText);
-                            
+                            /*
                             window.clearInterval(que.update);
                             que.update=window.setInterval(function(){
                                 
@@ -248,9 +280,7 @@ function create_Thread(threadData){
                                 get_post();
                                 
                             },500);
-                            
-                            
-                            
+                            */ 
                         }
                     }
 

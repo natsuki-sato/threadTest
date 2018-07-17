@@ -4,11 +4,50 @@
  * and open the template in the editor.
  */
 
+//非同期なajaxの実行結果を格納
+var ajax_result={
+    set_post : null,
+    get_post : null,
+    auth     : null,
+    update   : null
+};
+
+function get_ajax_result(name){
+    return ajax_result[name];
+}
+
+function obs_interval(data){
+    
+    var que=ajax_result[data.name];
+    
+    window.clearInterval(que);
+    
+    que=window.setInterval(function(){
+
+        var result=get_ajax_result(data.name);
+        
+        console.log({authResult:result});
+
+        if(result===true){
+            data.funcTrue(data.para);
+            window.clearInterval(que);
+            
+        }else if(result===false){
+            data.funcFalse(data.para);
+            window.clearInterval(que);
+            
+        }else{
+            
+        }
+
+    },data.time);
+}
 
 //引数のテキスト、パスワードを送信して記事を投稿する
-function set_post(text){
+function set_post(password,text){
     
       var data = {
+         'password' : password,
          'text' : text
       };
       
@@ -20,9 +59,13 @@ function set_post(text){
         data: data,
         async: true,
         success:function(data, dataType) {
-
-            alert("記事を投稿しました。");
-            get_post();
+            //console.log(data);
+            if(data==="true"){
+                alert("記事を投稿しました。");
+                get_post();
+            }else{
+                alert("記事の投稿ができませんでした。");
+            }
         },
         error:function(XMLHttpRequest, textStatus, errorThrown) {
             
@@ -80,6 +123,12 @@ function auth_password(id,pass){
         async: true,
         success:function(data, dataType) {
             console.log(data);
+            
+            if(data==="true"){
+                ajax_result.auth=true;
+            }else{
+                ajax_result.auth=false;
+            }
             //グローバル変数に格納
             //alert(data=="true" ?"パスワードの認証成功":"パスワードが異なります");
         },
@@ -109,8 +158,13 @@ function update_post(id,pass,text){
         success:function(data, dataType) {
             console.log(data);
             
-            //get_post();
             
+            if(data==="true"){
+                alert("記事を更新しました。");
+                get_post();
+            }else{
+                alert("記事の更新ができませんでした。");
+            }
             //グローバル変数に格納
             //alert(data=="true" ?"パスワードの認証成功":"パスワードが異なります");
         },

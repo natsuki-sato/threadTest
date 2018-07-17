@@ -25,13 +25,14 @@
     }
     
     //ajaxデータを変数に格納s
-    $text   = filter_input(INPUT_POST, 'text');
+    $text  = filter_input(INPUT_POST, 'text');
+    $pw    = filter_input(INPUT_POST, 'password');
     
     //テーブル名
     $tb="thread";
     
     //実行するクエリの内容(データの挿入)
-    $query="insert into ".$tb." (text) values ('".$text."')";
+    $query="insert into ".$tb." (password,text) values ('".$pw."','".$text."')";
     
     //クエリを実行
     $result = mysqli_query($connect,$query);
@@ -39,10 +40,14 @@
     //結果がなかったら終了
     if(!$result){
         //echo "投稿が失敗しました。";
+        echo json_encode(false);
         die();
     }
     //echo "投稿しました。";
     
     mysqli_close($connect);
+    
+    echo json_encode(true);
+    
     //全処理を終了
     exit();
