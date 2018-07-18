@@ -15,23 +15,61 @@ var que={
 };
 
 
-//update_post(1,"","uuuuu");
+main();
 
-get_post();
+function main(){
+    
+    get_post();
 
-//auth_password(1,"");
+    var menuContent      = document.getElementById("menuContent"),
+        postBTN          = document.getElementById('postBTN'),
+        resetBTN         = document.getElementById('resetBTN'),
+        moveTopBtn       = document.getElementById('moveTopBtn'),
+        twitterLoginBtn  = document.getElementById('twitterLoginBtn'),
+        twitterLogoutBtn = document.getElementById('twitterLogoutBtn');
 
-console.log("test");
 
-document.getElementById('postBTN').addEventListener('click', post, false);
+    var twitterlogin = menuContent.getAttribute("data-twitterlogin");
 
-document.getElementById('resetBTN').addEventListener('click', reset, false);
+    twitterlogin = twitterlogin==="true" ? true : false;
 
-//ページ上部に移動する処理
-document.getElementById('moveTopBtn').addEventListener('click', function(){
-    //alert();
-    document.body.scrollTop=0;
-}, false);
+    console.log({twitter:twitterlogin});
+
+    if(twitterlogin) twitterLoginBtn.style.display="none";
+    else             twitterLogoutBtn.style.display="none";
+
+    //auth_password(1,"");
+
+    //===== 各種要素にイベントを追加 =====
+    
+    //記事投稿のクリックイベント
+    postBTN.addEventListener('click', post, false);
+
+//  //投稿テキストエリア初期化ボタンのクリックイベント
+    resetBTN.addEventListener('click', reset, false);
+
+    //ページ上部に移動する処理
+    moveTopBtn.addEventListener('click', function(){
+
+        document.body.scrollTop=0;
+
+    }, false);
+    
+    //twiiter認証用のログインボタンのクリックイベント
+    twitterLoginBtn.addEventListener('click', function(){
+        
+        var result = window.confirm("twiiterによるログイン認証を行いますか？");
+        if(result) location.href="login.php";
+    });
+
+    //twiiter認証用のログアウトボタンのクリックイベント
+    twitterLogoutBtn.addEventListener('click', function(){
+
+        var result=window.confirm("ログイン認証を解除しますか？");
+        if(result) logout_twitter();
+    });
+
+}
 
 //投稿ボタンの処理関数
 function post(){

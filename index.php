@@ -4,9 +4,10 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
+
 <html>
     <head>
-        
+       
         <title>掲示板</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,8 +21,10 @@ and open the template in the editor.
     <body>
         <div id="contentFrame">
             <div id="menu">
-                <div id="menuContent">
-                    <div id="moveTopBtn">↑</div>
+                <div id="menuContent" data-twitterLogin="<?php require 'php/check_twitter_auth.php';?>" >
+                    <span id="twitterLoginBtn"><p>Login</p></span>
+                    <span id="twitterLogoutBtn"><p>Logout</p></span>
+                    <span id="moveTopBtn">↑</span>
                 </div>
             </div>
             <div id="threadFrame">
@@ -43,6 +46,6 @@ and open the template in the editor.
     
     <?php 
         
-        require './php/auth_twitter.php'; 
+        //require 'twitteroauth/auth.php'; 
     ?>
 </html>

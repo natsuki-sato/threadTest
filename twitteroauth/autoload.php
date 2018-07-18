@@ -1,5 +1,5 @@
 <?php
-echo auto;
+echo "load_0,";
 /**
  * Use to autoload needed classes without Composer.
  *
@@ -7,7 +7,7 @@ echo auto;
  * @return void
  */
 spl_autoload_register(function ($class) {
-
+    
     // project-specific namespace prefix
     $prefix = 'Abraham\\TwitterOAuth\\';
 
@@ -28,9 +28,10 @@ spl_autoload_register(function ($class) {
     // separators with directory separators in the relative class name, append
     // with .php
     $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
-
+    //echo $file."<br>";
     // if the file exists, require it
     if (file_exists($file)) {
         require $file;
     }
+    echo "load_1,";
 });

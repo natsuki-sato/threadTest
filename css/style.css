@@ -29,6 +29,42 @@ body{
     margin: 8px;
 }
 
+#twitterLoginBtn{
+    background-image:url("images/Twitter_Social_Icon_Rounded_Square_Color.svg");
+    /*background-image: url(../img/Twitter_Social_Icon_Rounded_Square_Color.png);*/
+    width: 60px;
+    height: 60px;
+    margin:2px;
+    /*border: 1px solid black;*/
+    float: left;
+}
+
+/*ログイン前を示すテキスト*/
+#twitterLoginBtn p{
+    text-align: center;
+    color: #222;
+    text-shadow: 1px 1px #eee;
+    font-weight: bold;
+}
+
+#twitterLogoutBtn{
+    background-image:url("images/Twitter_Social_Icon_Rounded_Square_White.svg");
+    /*background-image: url(../img/Twitter_Social_Icon_Rounded_Square_Color.png);*/
+    width: 60px;
+    height: 60px;
+    margin:2px;
+    /*border: 1px solid black;*/
+    float: left;
+}
+
+/*ログイン中を示すテキスト*/
+#twitterLogoutBtn p{
+    text-align: center;
+    color: #e00;
+    text-shadow: 1px 1px #eee;
+    font-weight: bold;
+}
+
 #moveTopBtn{
     float: right;
     border: 1px solid black;

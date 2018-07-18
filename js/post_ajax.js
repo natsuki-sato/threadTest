@@ -174,3 +174,34 @@ function update_post(id,pass,text){
         }
       });
 }
+
+
+//パスワードの認証を行う
+function logout_twitter(){
+    
+    
+      var data = {
+        //id       : id,
+        //password : pass,
+        //text     : text
+      };
+      
+      console.log({ajax_post:data});
+      
+      $.ajax({
+        type: "POST",
+        url: "logout.php",
+        data: data,
+        async: true,
+        success:function(data, dataType) {
+            console.log(data);
+            
+            location.reload();
+            
+        },
+        error:function(XMLHttpRequest, textStatus, errorThrown) {
+            
+            console.log(errorThrown);
+        }
+      });
+}
