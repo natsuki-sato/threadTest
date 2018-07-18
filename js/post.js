@@ -24,7 +24,7 @@ function main(){
     var menuContent      = document.getElementById("menuContent"),
         postBTN          = document.getElementById('postBTN'),
         resetBTN         = document.getElementById('resetBTN'),
-        moveTopBtn       = document.getElementById('moveTopBtn'),
+        pageMoveBtn      = document.getElementById('pageMoveBtn'),
         twitterLoginBtn  = document.getElementById('twitterLoginBtn'),
         twitterLogoutBtn = document.getElementById('twitterLogoutBtn');
 
@@ -49,11 +49,49 @@ function main(){
     resetBTN.addEventListener('click', reset, false);
 
     //ページ上部に移動する処理
-    moveTopBtn.addEventListener('click', function(){
+    pageMoveBtn.addEventListener('click', function(){
 
-        document.body.scrollTop=0;
-
+        var scrollToVal=99999;
+        if(this.getAttribute("data-scroll")==="0")  scrollToVal=0;
+        document.body.scrollTop=scrollToVal;
+        this.removeAttribute("data-scroll","");
+        
     }, false);
+    
+    //スクロール処理を貯める
+    var que_scroll=null;
+    
+    //スクロール可能な領域全体の高さ
+    var scrollHeight = document.body.scrollHeight;
+    
+    window.onscroll = function(){
+        
+        
+        clearTimeout(que_scroll);
+        que_scroll = window.setTimeout(function(){
+            clearTimeout(que_scroll);
+            
+            //スクロール可能な領域の上端から現在表示している領域の上端までの距離
+            var scrollTop =
+                document.documentElement.scrollTop || // IE、Firefox、Opera
+                document.body.scrollTop;              // Chrome、Safari
+            
+            // 要素のスクロール分を含めた高さ
+            var scrollPosition = document.body.offsetHeight;
+            
+            var bottomScroll = scrollPosition-scrollHeight;
+            
+            //現在のスクロール位置が最下部ならアイコンを回転する
+            var rotateVal=  "", setData = scrollTop;
+            if(scrollTop >= bottomScroll ){
+                rotateVal=  "rotate(180deg)",setData=0;
+            }
+            document.getElementById('pageMoveBtn').style.transform=rotateVal;
+            document.getElementById('pageMoveBtn').setAttribute('data-scroll',setData);
+            
+        },200);
+    };
+    
     
     //twiiter認証用のログインボタンのクリックイベント
     twitterLoginBtn.addEventListener('click', function(){

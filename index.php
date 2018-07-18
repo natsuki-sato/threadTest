@@ -23,8 +23,8 @@ and open the template in the editor.
             <div id="menu">
                 <div id="menuContent" data-twitterLogin="<?php require 'php/check_twitter_auth.php';?>" >
                     <span id="twitterLoginBtn"><p>Login</p></span>
-                    <span id="twitterLogoutBtn"><p>Logout</p></span>
-                    <span id="moveTopBtn">↑</span>
+                    <span id="twitterLogoutBtn" ><p>Logout</p></span>
+                    <span id="pageMoveBtn"></span>
                 </div>
             </div>
             <div id="threadFrame">

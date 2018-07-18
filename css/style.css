@@ -65,14 +65,16 @@ body{
     font-weight: bold;
 }
 
-#moveTopBtn{
+#pageMoveBtn{
     float: right;
-    border: 1px solid black;
     width: 5%;
     height: 90%;
-    background: white;
-    text-align: center;
-    margin-top: 2px;
+    border: 1px solid black;
+    margin:2px;
+    
+    background: turquoise;
+    background-image: url(images/pageBottom.svg);
+    /*transform:rotate(0);*/
 }
 
 /* 掲示板のコンテンツを囲むフレーム */
